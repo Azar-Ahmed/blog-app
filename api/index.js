@@ -1,10 +1,15 @@
 // Importing required modules
-import dotenv from 'dotenv';
 import express from 'express'
 import mongoose from 'mongoose'
+import dotenv from 'dotenv';
+import UserRoute from './routes/user.route.js'
+import AuthRoute from './routes/auth.route.js'
 
 // Initialize Express app
 const app = express();
+
+// Middleware
+app.use(express.json());
 
 // Load environment variables
 dotenv.config();
@@ -12,14 +17,17 @@ dotenv.config();
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
-    console.log('MongoDB connected successfully');
+    console.log('Database connected successfully');
   })
   .catch((err) => {
-    console.log('Error connecting to MongoDB:', err);
+    console.log('Error connecting to Database:', err);
   });
 
-// Set the port for Express app
-const PORT = 8080;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`)
+// Routes
+app.use('/api/user', UserRoute);
+app.use('/api/auth', AuthRoute);
+
+
+app.listen(process.env.PORT, () => {
+    console.log(`Server is running on port ${process.env.PORT}`)
 })
