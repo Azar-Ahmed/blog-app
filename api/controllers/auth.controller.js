@@ -1,19 +1,20 @@
 import User from "../models/user.model.js";
+import {errorHandler} from '../utils/error.utils.js'
 import bcryptjs from 'bcryptjs'
 
-export const signUp = async (req, res) => {
+export const signUp = async (req, res, next) => {
   const { username, email, password } = req.body;
 
   //  Validation
   if (!username || !email || !password) {
-    return res.status(400).json({error: "All fields are required!"})
+    next(errorHandler(400, "All fields are required!"))
   }
 
   try {
     // Check if the email is already registered
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ error: "Email is already registered." });
+      next(errorHandler(400, "Email is already registered."))
     }
 
     // Hashed password
@@ -29,7 +30,6 @@ export const signUp = async (req, res) => {
         user: { username, email },
       });
   } catch (error) {
-    console.error("Error saving user:", error);
-    res.status(500).json({ error: "Internal server error." });
+    next(error)
   }
 };
