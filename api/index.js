@@ -4,12 +4,14 @@ import mongoose from 'mongoose'
 import dotenv from 'dotenv';
 import UserRoute from './routes/user.route.js'
 import AuthRoute from './routes/auth.route.js'
+import cookieParser from 'cookie-parser'
 
 // Initialize Express app
 const app = express();
 
 // Middleware
 app.use(express.json());
+app.use(cookieParser())
 
 // Load environment variables
 dotenv.config();
